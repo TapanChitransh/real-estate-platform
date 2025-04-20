@@ -7,7 +7,7 @@ const propertiesSchema = new mongoose.Schema({
     price:Number,
     address:{type:String,required:true},
     propertyType:{type:String}
-});
+},{ timestamps: true });
 
 const Property = mongoose.model('Properties',propertiesSchema);
 
