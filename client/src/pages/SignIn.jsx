@@ -15,12 +15,14 @@ export default function SignIn() {
       [e.target.id]: e.target.value
       });
   };
+
+ 
    console.log(formData);
   return (
     <>
       <Header/>
        <div className='p-3 max-w-md mx-auto'>
-          <h1 className='text-3xl text-center font-semibold my-7'>Sign Up</h1>
+          <h1 className='text-3xl text-center font-semibold my-7'>Sign In</h1>
           <form action="" className='flex flex-col gap-4'>
             <input onChange={handleChange} type='text' placeholder='UserEmail' className='border p-4 rounded-lg' id='useremail'></input>
             <div className="relative">
