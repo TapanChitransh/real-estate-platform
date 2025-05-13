@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Header from './Header'
 import { FaEye,FaEyeSlash } from "react-icons/fa";
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import PasswordChecklist from "react-password-checklist"
 
 
@@ -12,6 +12,9 @@ export default function SignUp() {
   const [password,setpassword] = useState("");
   const [confirmpassword,setconfirmpassword] = useState("");
   const [formData,setFormData] = useState({});
+  const [error,setError] = useState(null);
+  const [loading,setLoading] = useState(false);
+  const navigate = useNavigate(); 
 
   const handleChange = (e) =>{
       setFormData({
@@ -22,16 +25,29 @@ export default function SignUp() {
 
   const SubmitHandle =async (e)=>{
     e.preventDefault();
-    const res = await fetch('/api/users/registeruser',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify(formData),
-    });
-    const data = await res.json();
-    console.log(data);
-  }
+    try {
+        setLoading(true);
+      const res = await fetch('/api/users/registeruser',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if(data.success === false){
+        setError(data.message);
+        setLoading(false);
+        return;
+      }
+      setLoading(false);
+      setError(null);
+      navigate('/sign-in');
+    } catch (error) {
+      setLoading(false);
+      setError(error.message);
+    } 
+  };
 
    console.log(formData);
   return (
@@ -65,8 +81,9 @@ export default function SignUp() {
             {showconfirmpassword? <FaEyeSlash onClick={()=>setshowconfirmpassword(!showconfirmpassword)} className='absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer' /> : <FaEye onClick={()=>setshowconfirmpassword(!showconfirmpassword)} className='absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer' />}
             </div>
 
-          <button className='bg-slate-500 text-white p-4 rounded-lg hover:opacity-80'>Submit</button>
+          <button disabled={loading} className='bg-slate-500 text-white p-4 rounded-lg hover:opacity-80'>{!loading? "SignUp" : "Loading"}</button>
           </form>
+          {error && <p className='text-red-500 mt-5'>{error}</p> }
           
           <div className='flex gap-2'>
               <h2>Already a User?? </h2>
